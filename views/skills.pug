@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1 Add Skills
+  form(method="POST" enctype="multipart/form-data")
+    input(type="text" name="name" placeholder="Skill Name" required)
+    input(type="text" name="level" placeholder="Skill Level (e.g., 80%)" required)
+    input(type="file" name="icon" required)
+    button(type="submit") Add Skill
+
+  .skill-list
+    each s in skills
+      .skill-item
+        if s.icon
+          img(src=s.icon alt=s.name)
+        h2= s.name
+        p= s.level
+        a(href=`/admin/skills/delete/${s._id}`) Delete

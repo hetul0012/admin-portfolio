@@ -1,0 +1,20 @@
+extends layout
+
+block content
+  h1 Add Projects
+  form(method="POST" enctype="multipart/form-data")
+    input(type="text" name="title" placeholder="Project Title" required)
+    input(type="text" name="description" placeholder="Description" required)
+    input(type="text" name="techStack" placeholder="Tech Stack / Live Link" required)
+    input(type="file" name="image" required)
+    button(type="submit") Add Project
+
+  .project-list
+    each p in projects
+      .project-item
+        if p.image
+          img(src=p.image alt=p.title)
+        h2= p.title
+        p= p.description
+        a(href=p.techStack target="_blank") Live Demo
+        a(href=`/admin/projects/delete/${p._id}`) Delete

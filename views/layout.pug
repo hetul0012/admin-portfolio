@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title Admin Dashboard
+    link(rel="stylesheet", href="/css/admin.css")
+  body
+    nav.navbar
+      .logo Admin Dashboard
+      ul.nav-links
+        li: a(href="/admin/projects") Projects
+        li: a(href="/admin/skills") Skills
+    block content
