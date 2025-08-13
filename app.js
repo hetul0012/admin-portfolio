@@ -5,6 +5,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
+process.on('unhandledRejection', err => { console.error('UNHANDLED_REJECTION', err); });
+process.on('uncaughtException', err => { console.error('UNCAUGHT_EXCEPTION', err); });
+
 const app = express();
 
 app.set('view engine', 'pug');
@@ -32,6 +35,8 @@ app.use(cors({
 }));
 app.options('*', cors());
 
+app.get('/health', (req, res) => res.status(200).json({ ok: true }));
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB error:', err));
@@ -42,4 +47,4 @@ app.use('/api', require('./routes/apiRoutes'));
 app.get('/', (req, res) => res.redirect('/admin/projects'));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
