@@ -5,9 +5,6 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-process.on('unhandledRejection', err => { console.error('UNHANDLED_REJECTION', err); });
-process.on('uncaughtException', err => { console.error('UNCAUGHT_EXCEPTION', err); });
-
 const app = express();
 
 app.set('view engine', 'pug');
@@ -18,20 +15,23 @@ app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
+const SELF = process.env.API_BASE || 'https://admin-portfolio-5ws2.onrender.com';
 const CLIENTS = [
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:3000',
   'https://hetul-portfolio-react.vercel.app',
-  process.env.CLIENT_ORIGIN
+  process.env.CLIENT_ORIGIN,
+  SELF
 ].filter(Boolean);
 
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin) return cb(null, true);
     if (CLIENTS.includes(origin)) return cb(null, true);
-    return cb(new Error(`CORS blocked: ${origin}`), false);
-  }
+    return cb(null, false);
+  },
+  credentials: true
 }));
 app.options('*', cors());
 
@@ -47,4 +47,8 @@ app.use('/api', require('./routes/apiRoutes'));
 app.get('/', (req, res) => res.redirect('/admin/projects'));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server listening on ${PORT}`));
+const HOST = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+app.listen(PORT, () => {
+  console.log(` Server is running at: ${HOST}`);
+  console.log(` Listening on port ${PORT}`);
+});
