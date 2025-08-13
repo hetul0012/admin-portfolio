@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Project = require('../models/project');
-const Skill = require('../models/skill');
+const Skill = require('../models/Skill');
 
 const API_BASE = process.env.API_BASE || 'https://admin-portfolio-5ws2.onrender.com';
 
