@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
-const Project = require('../models/project');
+const Project = require('../models/Project');
 const Skill = require('../models/Skill');
 
 /* Multer storage to /public/uploads */
