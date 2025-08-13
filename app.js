@@ -18,10 +18,20 @@ app.use(express.json());
 
 /* CORS */
 const CLIENTS = [
+  'http://localhost:5173',
   'http://localhost:5174',
+  'https://hetul-portfolio-react.vercel.app',
   process.env.CLIENT_ORIGIN
 ].filter(Boolean);
-app.use(cors({ origin: CLIENTS }));
+
+
+app.use(cors({
+  origin: (origin, cb) => {
+    if (!origin) return cb(null, true);
+    if (CLIENTS.includes(origin)) return cb(null, true);
+    return cb(new Error(`CORS blocked: ${origin}`), false);
+  }
+}));
 
 /* MongoDB */
 mongoose.connect(process.env.MONGODB_URI)

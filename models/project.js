@@ -4,7 +4,7 @@ const ProjectSchema = new mongoose.Schema(
   {
     title:   { type: String, required: true },
     url:     { type: String, default: '/' },
-    image:   { type: String },     
+    image:   { type: String },    
     summary: { type: String },
     tech:    [{ type: String }]
   },

@@ -1,12 +1,14 @@
 const mongoose = require('mongoose');
 
-const SkillSchema = new mongoose.Schema(
+const ProjectSchema = new mongoose.Schema(
   {
-    name:  { type: String, required: true },
-    level: { type: String },  
-    icon:  { type: String }   
+    title:   { type: String, required: true },
+    url:     { type: String, default: '/' },
+    image:   { type: String },    
+    summary: { type: String },
+    tech:    [{ type: String }]
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Skill', SkillSchema);
+module.exports = mongoose.model('Project', ProjectSchema);
