@@ -1,51 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const path = require('path');
+const multer = require('multer');
 const Project = require('../models/project');
 const Skill = require('../models/Skill');
 
-// Multer setup
+/* Multer storage */
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'public/uploads'),
-  filename: (req, file, cb) =>
-    cb(null, Date.now() + '-' + file.originalname)
+  destination: (req, file, cb) => cb(null, path.join(__dirname, '..', 'public', 'uploads')),
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    const base = path.basename(file.originalname, ext).replace(/\s+/g, '-').toLowerCase();
+    cb(null, `${Date.now()}-${base}${ext}`);
+  }
 });
-
 const upload = multer({ storage });
 
-// Projects
+/* Projects admin */
 router.get('/projects', async (req, res) => {
-  const projects = await Project.find().lean();
-  res.render('projects', { projects });
+  const items = await Project.find().sort({ createdAt: -1 });
+  res.render('projects', { title: 'Projects', items });
 });
-
 router.post('/projects', upload.single('image'), async (req, res) => {
-  const { title, description, techStack } = req.body;
+  const { title, url, summary, tech = '' } = req.body;
+  const techArr = tech.split(',').map(t => t.trim()).filter(Boolean);
   const image = req.file ? `/uploads/${req.file.filename}` : '';
-  await Project.create({ title, description, techStack, image });
+  await Project.create({ title, url, summary, tech: techArr, image });
   res.redirect('/admin/projects');
 });
-
-router.get('/projects/delete/:id', async (req, res) => {
+router.post('/projects/:id/delete', async (req, res) => {
   await Project.findByIdAndDelete(req.params.id);
   res.redirect('/admin/projects');
 });
 
-// Skills
+/* Skills admin */
 router.get('/skills', async (req, res) => {
-  const skills = await Skill.find().lean();
-  res.render('skills', { skills });
+  const items = await Skill.find().sort({ createdAt: -1 });
+  res.render('skills', { title: 'Skills', items });
 });
-
 router.post('/skills', upload.single('icon'), async (req, res) => {
   const { name, level } = req.body;
   const icon = req.file ? `/uploads/${req.file.filename}` : '';
   await Skill.create({ name, level, icon });
   res.redirect('/admin/skills');
 });
-
-router.get('/skills/delete/:id', async (req, res) => {
+router.post('/skills/:id/delete', async (req, res) => {
   await Skill.findByIdAndDelete(req.params.id);
   res.redirect('/admin/skills');
 });

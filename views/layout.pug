@@ -1,12 +1,15 @@
 doctype html
 html
   head
-    title Admin Dashboard
+    meta(charset="utf-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    title= title
     link(rel="stylesheet", href="/css/admin.css")
   body
-    nav.navbar
-      .logo Admin Dashboard
-      ul.nav-links
-        li: a(href="/admin/projects") Projects
-        li: a(href="/admin/skills") Skills
-    block content
+    header.navbar
+      .brand Admin Portfolio
+      nav.menu
+        a(href="/admin/projects") Projects
+        a(href="/admin/skills") Skills
+    main.container
+      block content

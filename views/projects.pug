@@ -1,20 +1,53 @@
 extends layout
-
 block content
-  h1 Add Projects
-  form(method="POST" enctype="multipart/form-data")
-    input(type="text" name="title" placeholder="Project Title" required)
-    input(type="text" name="description" placeholder="Description" required)
-    input(type="text" name="techStack" placeholder="Tech Stack / Live Link" required)
-    input(type="file" name="image" required)
-    button(type="submit") Add Project
+  section.card
+    h1.section-title Projects
+    form.grid-2(method="post", action="/admin/projects", enctype="multipart/form-data")
+      .form-group
+        label Title
+        input(type="text", name="title", placeholder="Project title", required)
+      .form-group
+        label Live URL
+        input(type="url", name="url", placeholder="https://...")
+      .form-group
+        label Tech (comma separated)
+        input(type="text", name="tech", placeholder="HTML, CSS, JS")
+      .form-group
+        label Summary
+        textarea(name="summary", placeholder="Short description")
+      .form-group
+        label Image
+        input(type="file", name="image", accept="image/*")
+      .form-actions
+        button.btn-primary(type="submit") + Add Project
 
-  .project-list
-    each p in projects
-      .project-item
-        if p.image
-          img(src=p.image alt=p.title)
-        h2= p.title
-        p= p.description
-        a(href=p.techStack target="_blank") Live Demo
-        a(href=`/admin/projects/delete/${p._id}`) Delete
+  if items.length
+    section.card
+      h2.section-subtitle Current Items
+      table.table
+        thead
+          tr
+            th Preview
+            th Title
+            th URL
+            th Tech
+            th Added
+            th Actions
+        tbody
+          each p in items
+            tr
+              td
+                if p.image
+                  img.thumb(src=p.image, alt=p.title)
+              td= p.title
+              td
+                if p.url
+                  a(href=p.url, target="_blank")= p.url
+              td= (p.tech || []).join(', ')
+              td= p.createdAt.toLocaleString()
+              td
+                form(method="post", action=`/admin/projects/${p._id}/delete`)
+                  button.btn-danger(type="submit", onclick="return confirm('Delete?')") Delete
+  else
+    section.card
+      p.muted No projects yet.
